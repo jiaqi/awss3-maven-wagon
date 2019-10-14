@@ -20,7 +20,3 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       - run: mvn package sources:jar javadoc:jar
-      - deployment:
-          main:
-            branch: master
-            command: mvn deploy
