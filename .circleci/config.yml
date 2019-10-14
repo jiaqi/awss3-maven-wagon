@@ -19,4 +19,4 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      - run: mvn package sources:jar javadoc:jar
+      - run: mvn package source:jar javadoc:jar
