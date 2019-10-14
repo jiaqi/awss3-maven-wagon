@@ -195,9 +195,7 @@ public class S3Wagon extends StreamWagon {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
+  @Override
   public List<String> getFileList(String destinationDirectory)
       throws TransferFailedException, ResourceDoesNotExistException {
     String path = keyPrefix + destinationDirectory;
@@ -226,9 +224,7 @@ public class S3Wagon extends StreamWagon {
     return new ArrayList<String>(results);
   }
 
-  /**
-   * @inheritDoc
-   */
+  @Override
   public boolean getIfNewer(String resourceName, File destination, long timestamp)
       throws ResourceDoesNotExistException, TransferFailedException {
     ObjectMetadata meta = getRequiredMetadata(resourceName);
@@ -244,9 +240,6 @@ public class S3Wagon extends StreamWagon {
     return true;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public boolean getIfNewerToStream(String resourceName, OutputStream out, long timestamp)
       throws ResourceDoesNotExistException, TransferFailedException {
@@ -287,9 +280,6 @@ public class S3Wagon extends StreamWagon {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
     AWSCredentialsProvider credentials = new AWSCredentialsProviderChain(
@@ -334,9 +324,7 @@ public class S3Wagon extends StreamWagon {
     fireSessionDebug("Key prefix " + keyPrefix);
   }
 
-  /**
-   * @inheritDoc
-   */
+  @Override
   public void put(File source, String destination)
       throws TransferFailedException, ResourceDoesNotExistException {
     try (InputStream in = new FileInputStream(source)) {
