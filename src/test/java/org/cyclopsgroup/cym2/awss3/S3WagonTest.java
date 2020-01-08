@@ -11,17 +11,13 @@ import org.junit.Ignore;
  */
 @Ignore
 public class S3WagonTest extends StreamingWagonTestCase {
-  /**
-   * @inheritDoc
-   */
+  /** @inheritDoc */
   @Override
   protected String getTestRepositoryUrl() throws IOException {
     return "s3://test-bucket/testpath/root";
   }
 
-  /**
-   * @inheritDoc
-   */
+  /** @inheritDoc */
   @Override
   protected String getProtocol() {
     return "s3";

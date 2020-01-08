@@ -1,5 +1,20 @@
 package org.cyclopsgroup.cym2.awss3;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.AWSCredentialsProviderChain;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,30 +45,15 @@ import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.resource.Resource;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSCredentialsProviderChain;
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.auth.InstanceProfileCredentialsProvider;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-/**
- * Amazon S3 wagon provider implementation.
- */
+/** Amazon S3 wagon provider implementation. */
 public class S3Wagon extends StreamWagon {
   private static Map<String, String> loadMimeTypes() throws IOException {
     Map<String, String> map = new HashMap<String, String>();
-    try (LineNumberReader reader = new LineNumberReader(
-        new InputStreamReader(S3Wagon.class.getClassLoader().getResourceAsStream("mime.types")))) {
+    try (LineNumberReader reader =
+        new LineNumberReader(
+            new InputStreamReader(
+                S3Wagon.class.getClassLoader().getResourceAsStream("mime.types")))) {
 
       for (String line = reader.readLine(); line != null; line = reader.readLine()) {
         if (StringUtils.isBlank(line) || line.startsWith("#")) {
@@ -95,8 +95,8 @@ public class S3Wagon extends StreamWagon {
   @Override
   public void closeConnection() throws ConnectionException {}
 
-  private void doPutFromStream(InputStream in, File inFile, String destination, long contentLength,
-      long lastModified) {
+  private void doPutFromStream(
+      InputStream in, File inFile, String destination, long contentLength, long lastModified) {
     Resource resource = new Resource(destination);
     firePutInitiated(resource, inFile);
 
@@ -158,8 +158,8 @@ public class S3Wagon extends StreamWagon {
         throw new ResourceDoesNotExistException(
             "403 implies that key " + key + " does not exist in bucket " + bucketName, e);
       }
-      throw new TransferFailedException("Can't get object " + key + " from S4 bucket " + bucketName,
-          e);
+      throw new TransferFailedException(
+          "Can't get object " + key + " from S4 bucket " + bucketName, e);
     }
     in.getResource().setContentLength(object.getObjectMetadata().getContentLength());
     in.getResource().setLastModified(object.getObjectMetadata().getLastModified().getTime());
@@ -206,8 +206,12 @@ public class S3Wagon extends StreamWagon {
 
     // Since S3 does not have concept of directory, result contains all
     // contents with given prefix
-    ObjectListing result = s3.listObjects(
-        new ListObjectsRequest().withBucketName(bucketName).withPrefix(path).withDelimiter("/"));
+    ObjectListing result =
+        s3.listObjects(
+            new ListObjectsRequest()
+                .withBucketName(bucketName)
+                .withPrefix(path)
+                .withDelimiter("/"));
     if (result.getObjectSummaries().isEmpty()) {
       throw new ResourceDoesNotExistException("No keys exist with prefix " + path);
     }
@@ -232,8 +236,12 @@ public class S3Wagon extends StreamWagon {
       return false;
     }
     if (meta.getLastModified() != null && meta.getLastModified().getTime() > timestamp) {
-      fireSessionDebug("Remote timestamp " + meta.getLastModified()
-          + " is greater than local timestamp " + timestamp + ", ignore get");
+      fireSessionDebug(
+          "Remote timestamp "
+              + meta.getLastModified()
+              + " is greater than local timestamp "
+              + timestamp
+              + ", ignore get");
       return false;
     }
     get(resourceName, destination);
@@ -248,8 +256,12 @@ public class S3Wagon extends StreamWagon {
       return false;
     }
     if (meta.getLastModified() != null && meta.getLastModified().getTime() > timestamp) {
-      fireSessionDebug("Remote timestamp " + meta.getLastModified()
-          + " is greater than local timestamp " + timestamp + ", ignore get");
+      fireSessionDebug(
+          "Remote timestamp "
+              + meta.getLastModified()
+              + " is greater than local timestamp "
+              + timestamp
+              + ", ignore get");
       return false;
     }
     Resource resource = new Resource(resourceName);
@@ -282,9 +294,11 @@ public class S3Wagon extends StreamWagon {
 
   @Override
   protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
-    AWSCredentialsProvider credentials = new AWSCredentialsProviderChain(
-        new EnvironmentVariableCredentialsProvider(), new InstanceProfileCredentialsProvider(true),
-        new WagonAuthCredentialsProvider(authenticationInfo));
+    AWSCredentialsProvider credentials =
+        new AWSCredentialsProviderChain(
+            new EnvironmentVariableCredentialsProvider(),
+            new InstanceProfileCredentialsProvider(true),
+            new WagonAuthCredentialsProvider(authenticationInfo));
 
     // Pass timeout configuration to AWS client config
     ClientConfiguration config = new ClientConfiguration();
@@ -294,9 +308,11 @@ public class S3Wagon extends StreamWagon {
 
     // Possible proxy
     ProxyInfo proxy = getProxyInfo();
-    fireSessionDebug("Setting up AWS S3 client with source "
-        + ToStringBuilder.reflectionToString(getRepository())
-        + ", authentication information and proxy " + ToStringBuilder.reflectionToString(proxy));
+    fireSessionDebug(
+        "Setting up AWS S3 client with source "
+            + ToStringBuilder.reflectionToString(getRepository())
+            + ", authentication information and proxy "
+            + ToStringBuilder.reflectionToString(proxy));
     if (proxy != null) {
       config.setProxyDomain(proxy.getNtlmDomain());
       config.setProxyHost(proxy.getHost());
@@ -309,8 +325,12 @@ public class S3Wagon extends StreamWagon {
     // TODO: At this point the region is hard-coded to US_EAST_1
     // I understand this is very inflexible. A better implementation is open to
     // discuss.
-    s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).withCredentials(credentials)
-        .withClientConfiguration(config).build();
+    s3 =
+        AmazonS3ClientBuilder.standard()
+            .withRegion(Regions.US_EAST_1)
+            .withCredentials(credentials)
+            .withClientConfiguration(config)
+            .build();
     bucketName = getRepository().getHost();
     fireSessionDebug("Bucket name is " + bucketName);
 
@@ -345,8 +365,10 @@ public class S3Wagon extends StreamWagon {
     fireTransferDebug(
         "Putting " + sourceDirectory + " to " + destinationDirectory + " which is noop");
     for (File file : sourceDirectory.listFiles()) {
-      String dest = StringUtils.isBlank(destinationDirectory) ? file.getName()
-          : (destinationDirectory + "/" + file.getName());
+      String dest =
+          StringUtils.isBlank(destinationDirectory)
+              ? file.getName()
+              : (destinationDirectory + "/" + file.getName());
       fireTransferDebug("Putting child element " + file + " to " + dest);
       if (file.isDirectory()) {
         putDirectory(file, dest);
@@ -363,8 +385,9 @@ public class S3Wagon extends StreamWagon {
   }
 
   @Override
-  public void putFromStream(InputStream in, String destination, long contentLength,
-      long lastModified) throws TransferFailedException, ResourceDoesNotExistException {
+  public void putFromStream(
+      InputStream in, String destination, long contentLength, long lastModified)
+      throws TransferFailedException, ResourceDoesNotExistException {
     doPutFromStream(in, null, destination, contentLength, lastModified);
   }
 

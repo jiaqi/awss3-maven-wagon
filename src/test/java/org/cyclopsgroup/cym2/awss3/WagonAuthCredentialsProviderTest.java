@@ -2,9 +2,10 @@ package org.cyclopsgroup.cym2.awss3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.amazonaws.auth.AWSCredentials;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.junit.jupiter.api.Test;
-import com.amazonaws.auth.AWSCredentials;
 
 public class WagonAuthCredentialsProviderTest {
 

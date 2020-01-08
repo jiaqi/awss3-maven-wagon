@@ -1,15 +1,14 @@
 package org.cyclopsgroup.cym2.awss3;
 
-import javax.annotation.Nullable;
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import javax.annotation.Nullable;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 public class WagonAuthCredentialsProvider implements AWSCredentialsProvider {
-  @Nullable
-  private final AuthenticationInfo authenticationInfo;
+  @Nullable private final AuthenticationInfo authenticationInfo;
 
   WagonAuthCredentialsProvider(AuthenticationInfo authInfo) {
     this.authenticationInfo = authInfo;
@@ -35,8 +34,8 @@ public class WagonAuthCredentialsProvider implements AWSCredentialsProvider {
       throw new IllegalStateException(
           "Tag <password> isn't specified with AWS secret key in pom.xml or settings.xml.");
     }
-    return new BasicAWSCredentials(authenticationInfo.getUserName(),
-        authenticationInfo.getPassword());
+    return new BasicAWSCredentials(
+        authenticationInfo.getUserName(), authenticationInfo.getPassword());
   }
 
   @Override
