@@ -97,6 +97,6 @@
     </extensions>
   </build>
   <properties>
-    <aws.sdk.version>1.11.651</aws.sdk.version>
+    <aws.sdk.version>1.12.261</aws.sdk.version>
   </properties>
 </project>
