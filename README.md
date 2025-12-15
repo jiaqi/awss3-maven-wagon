@@ -5,7 +5,7 @@ site files in AWS S3.
 
 To get started, first define the extension in the POM file.
 
-```
+```xml
 <build>
   <extensions>
     <extension>
@@ -21,7 +21,7 @@ With the extension defined, the protocol `s3://` becomes available for url of
 repositories. Now we can define the repository for dependencies with it. This
 following definition declares a snapshot repository.
 
-```
+```xml
 <repositories>
   <repository>
     <id>my-server</id>
@@ -42,7 +42,7 @@ following definition declares a snapshot repository.
 And following definition makes sure artifacts are uploaded to the same s3
 repository.
 
-```
+```xml
 <distributionManagement>
   <snapshotRepository>
     <id>my-server</id>
@@ -55,7 +55,7 @@ repository.
 Unless your s3 bucket is open to public, the credentials need to be added to
 `$HOME/.m2/settings.xml`.
 
-```
+```xml
 <servers>
   <server>
     <id>my-server</id>
@@ -67,7 +67,7 @@ Unless your s3 bucket is open to public, the credentials need to be added to
 With settings above, `mvn deploy` uploads artifacts to the S3 bucket. The same
 setup works for site distribution as well.
 
-```
+```xml
 <distributionManagement>
   <site>
     <id>my-server</id>
