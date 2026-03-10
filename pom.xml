@@ -96,6 +96,18 @@
       </extension>
     </extensions>
   </build>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>github</id>
+      <name>GitHub jiaqi Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/jiaqi/awss3-maven-wagon</url>
+    </snapshotRepository>
+    <repository>
+      <id>github</id>
+      <name>GitHub jiaqi Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/jiaqi/awss3-maven-wagon</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <aws.sdk.version>1.12.797</aws.sdk.version>
   </properties>
